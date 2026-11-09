@@ -1,0 +1,32 @@
+id = "yoki.ai-commit"
+name = "AI Commit"
+version = "0.1.0"
+description = "Generates a Conventional-style Chinese commit message from the files checked in the Commit tool window, using DeepSeek (OpenAI-compatible)."
+authors = ["yoki"]
+license = "Apache-2.0"
+change-notes = "0.1.0 — first release: commit.message button, included-only diff, DeepSeek chat/completions, revision-protected message write-back."
+categories = ["ai", "tools"]
+engines.openidea = "^1.3"
+wasm = "dist/plugin.wasm"
+activation = ["on-command:*"]
+
+[capabilities]
+required = ["vcs.read", "vcs.write", "secrets"]
+optional = ["net:api.deepseek.com"]
+
+[contributes.settings]
+schema = "settings.schema.json"
+
+[[contributes.secrets]]
+name = "api-key"
+label = "DeepSeek API Key"
+description = "Stored in the OS keychain; the plugin never reads it. Used as the Bearer token for api.deepseek.com."
+
+[[contributes.commands]]
+id = "generate"
+title = "AI Commit: 生成提交信息"
+category = "AI Commit"
+
+[[contributes.menus]]
+menu = "commit.message"
+command = "generate"

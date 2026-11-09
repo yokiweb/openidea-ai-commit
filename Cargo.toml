@@ -1,0 +1,25 @@
+[package]
+name = "openidea-plugin-ai-commit"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+# 插件独立构建（目标 wasm32-wasip2），不并入 IDE workspace。
+# vendor 内的 SDK 自带 [workspace]，必须排除，否则 Cargo 报 multiple workspace roots。
+[workspace]
+exclude = ["vendor/openidea-plugin"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# 官方 API 1.3 SDK 的随仓库副本，保证离线可构建、发布包可复现。来源见 NOTICE.md。
+openidea-plugin = { path = "vendor/openidea-plugin" }
+serde_json = "1"
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true
+codegen-units = 1
+panic = "abort"
