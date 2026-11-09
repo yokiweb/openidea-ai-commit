@@ -15,15 +15,39 @@
 
 ## 安装 Install
 
-1. 从 [Releases](https://github.com/yokiweb/openidea-ai-commit/releases) 下载
-   `yoki.ai-commit-0.1.0.oiplugin`。
-2. Settings › Plugins › **Install Plugin from Package File…**，选择该文件。
-3. 确认权限页后启用；在 Settings › Plugins 里填 **DeepSeek API Key**。
+> **签名包的安装前提**：OpenIDEA 的 `signature_problem()` 会硬拒绝「publisher 不在
+> IDE 已加载的 marketplace index 里」的签名包（`refusing ...: unknown publisher "yoki"`），
+> 现象是安装无反应、插件列表里也没有。publisher `yoki` 通过社区 registry PR
+> [l0ng-ai/openidea-plugins#98](https://github.com/l0ng-ai/openidea-plugins/pull/98) 注册，审核中。
+> 无签名包不含 `SIGNATURE.json`，跳过该检查，只显示一条 unsigned 警告即可安装。
+
+**路径 A · 立即可用（无签名）**
+
+从 [Releases](https://github.com/yokiweb/openidea-ai-commit/releases) 下载
+`yoki.ai-commit-0.1.0-unsigned.oiplugin` → Settings › Plugins ›
+**Install Plugin from Package File…** → 确认权限 → 在 Settings › Plugins 里填 **DeepSeek API Key**。
+
+**路径 B · 签名包**
+
+下载 `marketplace-index.json`（官方市场 96 插件 + publisher `yoki` 的静态合并索引）→
+Settings › Plugins › 齿轮 › **Plugin Repository** → 把 *Marketplace index URL* 填为该文件的本地路径，或
+
+```
+https://github.com/yokiweb/openidea-ai-commit/releases/latest/download/marketplace-index.json
+```
+
+刷新市场后，从 *Available* 安装，或直接装 `yoki.ai-commit-0.1.0.oiplugin`。
+该 index 是快照；PR #98 合并后官方 index 会自动包含 `yoki`，把 URL 留空即可回到默认仓库。
 
 也可以 clone 本仓库，用 **Install Plugin from Disk…** 选择仓库目录
 （目录内含 `plugin.toml` + `dist/plugin.wasm`，适合本地调试）。
 
-包由 publisher `yoki` 的 Ed25519 密钥签名，公钥：
+| 包 | SHA-256 |
+|---|---|
+| `yoki.ai-commit-0.1.0-unsigned.oiplugin` | `0581067c51306d11dde0692e0b9782964deabab2a86344337e2dfa557f12cb34` |
+| `yoki.ai-commit-0.1.0.oiplugin`（签名） | `02265dfb36773c51de3d1083024b0f69b2c183e23735ee5f043b70e7e4207b20` |
+
+签名包 publisher `yoki`，Ed25519 公钥：
 
 ```
 B6us5d/AvCxkbIxX0sgmAnuj1JGsbYfwWYmtJJYXZV8=
@@ -31,7 +55,6 @@ B6us5d/AvCxkbIxX0sgmAnuj1JGsbYfwWYmtJJYXZV8=
 
 ```sh
 sha256sum yoki.ai-commit-0.1.0.oiplugin
-# 02265dfb36773c51de3d1083024b0f69b2c183e23735ee5f043b70e7e4207b20
 openidea-plugin check yoki.ai-commit-0.1.0.oiplugin
 ```
 
